@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="百度地图,个性配置平台,支持定制个性化地图">
+    <meta name="author" content="">
+    <link rel='stylesheet' href='css/spectrum.css' />
+    <link rel="stylesheet" type="text/css" href="css/zTreeStyle/zTreeStyle.css">
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/introjs.css" rel="stylesheet">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=8d6c8b8f3749aed6b1aff3aad6f40e37"></script>
+    <title>百度地图个性在线编辑器</title>
+    <!-- Bootstrap core CSS -->
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="container"></div>
+    <div id="search-box" class="hidden-xs">
+        <form name="f" id="search-form">
+            <input type="search" name="wd" id="kw1" maxlength="100" style="width:474px;" autocomplete="off"><span class="btn_wr" placeholder="请输入关键字查询">
+      <input type="submit" value="百度一下" id="su1" class="_btn" onmousedown="this.className='_btn btn_h'" onmouseout="this.className='_btn'"></span></form>
+    </div>
+    <div class="control" id="selectors">
+        <div class="control-body">
+            <div class="selectors-top">
+                <button type="button" id="addStyle" title="添加新的样式规则" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span>添加样式规则
+                </button>
+                <button type="button" id="templateList" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list"></span>个性化模板
+                </button>
+                <div id="loading"><b></b>正在应用新样式, 耗时<span id="loading-time"></span>ms..</div>
+                <button type="button" id="toggleSelectors" class="btn btn-default pull-right"><i class="glyphicon glyphicon-chevron-down  glyphicon-chevron-up"></i></button>
+                <a id="help" href="http://developer.baidu.com/map/jsdevelop-11.htm#2" target="#" class="btn btn-default pull-right" value=""><span class="glyphicon glyphicon-info-sign"></span>帮助</a>
+                <button id="jsonButton" type="button" class="btn btn-default pull-right"><span class="glyphicon glyphicon-cog"></span>查看JSON</button>
+                <!-- <button class="bdsharebuttonbox btn  pull-right" ><a href="#" class="bds_more" data-cmd="more" style="background:none;color:#fff;font-size:14px;padding:0;margin:0;height:auto;line-height:inherit"><span class="glyphicon glyphicon-share"></span>分享</a></button> -->
+                <span class="bdsharebuttonbox btn pull-right bdshare-button-style0-16" style="display:block" data-tag="share_1">
+
+<a class="bds_more" style="background:none;color:#fff;font-size:14px;padding:0;margin:0;height:auto;line-height:inherit" data-cmd="more">分享</a>
+
+</span>
+            </div>
+            <div id="selectors-bd" class="clearfix">
+                <div class="selector-item" id="style-rules" data-step="1" data-intro="样式规则指地图元素及其显示样式的组合，每次修改元素需要重新添加规则">
+                </div>
+                <div class="selector-item" id="elementType-box" data-step="2" data-intro="选择需要修改的地图元素，如地铁、poi等">
+                    <fieldset>
+                        <legend>元素</legend>
+                        <div class="elementType-tree-box">
+                            <ul id="catalogTree" class="ztree"></ul>
+                            <div id="catalogTree-info" style="display:none">
+                                <p id="catalogTree-info-desc"></p>
+                                <img src="" id="catalogTree-info-img">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="selector-item" id="elementType" data-step="3" data-intro=" 选择要修改的元素属性，如修改地铁的几何填充项">
+                    <fieldset>
+                        <legend>属性</legend>
+                        <div class="elementType-bd">
+                            <div>
+                                <label for="all" style="width:100%">
+                                    <input checked="checked" type="radio" id="all" value="all" name="elementType" />全部<span class="elementType-note">（指应用全部样式）</span></label>
+                            </div>
+                            <div id="geometry-bd" class="element-type-item">
+                                <p class="elementType-title">几何<span class="elementType-note">（如道路线的边框和填充项）</span></p>
+                                <label for="geometry">
+                                    <input type="radio" id="geometry" value="geometry" name="elementType" />全部</label>
+                                <label for="geometry.fill">
+                                    <input checked="checked" type="radio" id="geometry.fill" value="geometry.fill" name="elementType" />填充</label>
+                                <label for="geometry.stroke">
+                                    <input type="radio" id="geometry.stroke" value="geometry.stroke" name="elementType" />边框</label>
+                            </div>
+                            <p class="dashline"></p>
+                            <div id="label-bd" class="element-type-item">
+                                <p class="elementType-title">文本<span class="elementType-note">（如道路名称颜色）</span></p>
+                                <label for="labels">
+                                    <input type="radio" id="labels" value="labels" name="elementType" />全部</label>
+                                <label for="labels.text">
+                                    <input type="radio" id="labels.text" value="labels.text.fill" name="elementType" />填充</label>
+                                <label for="labels.text">
+                                    <input type="radio" id="labels.text" value="labels.text.stroke" name="elementType" />边框</label>
+                                <label for="labels.icon">
+                                    <input type="radio" id="labels.icon" value="labels.icon" name="elementType" />图标</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="selector-item" data-step="4" data-intro="设置元素的修改样式，如设置地铁几何填充色为蓝色。">
+                    <fieldset>
+                        <legend>样式</legend>
+                        <div class="style-item">
+                            <label class="style-item-color" title="指定颜色值">
+                                <input type="checkbox" id="set_color"><span>颜色</span>
+                                <input id="color">
+                            </label>
+                            <label title="通过设置色相值的叠加,可以轻松实现整体颜色的改变,同时保留原样式的层次感">
+                                <input type="checkbox" id="set_hue"><span>色相</span>
+                                <input id="hue">
+                            </label>
+                        </div>
+                        <div class="style-item">
+                            <label title="设置元素的亮度值,最大值为100,最小值-100.">
+                                <input type="checkbox" id="set_lightness"><span>亮度</span>
+                                <input class="slider" type="range" disabled="true" id="lightnessSlider" min="-100" max="100" value="1">
+                                <input type="text" size="4" disabled="true" id="lightness" class="form-control input-sm" value="1">
+                            </label>
+                        </div>
+                        <div class="style-item">
+                            <label title="设置元素的饱和度,最大值为100,最小值-100.">
+                                <input type="checkbox" id="set_saturation"><span>饱和度</span>
+                                <input class="slider" type="range" disabled="true" id="saturationSlider" min="-100" max="100" value="1">
+                                <input type="text" size="4" disabled="true" id="saturation" class="form-control input-sm" value="1">
+                            </label>
+                        </div>
+                        <div class="style-item">
+                            <label title="设置元素的宽度,可以直接调整道路的粗细显示.">
+                                <input type="checkbox" id="set_weight"><span>宽度</span>
+                                <input class="slider" type="range" disabled="true" id="weightSlider" min="0.1" step="0.1" max="8" value="1" />
+                                <input type="text" size="4" disabled="true" id="weight" class="form-control input-sm" value="1.0" />
+                            </label>
+                        </div>
+                        <div class="style-item">
+                            <label title="设置元素的是否显示,默认值是显示">
+                                <input type="checkbox" id="set_visibility"><span>显示</span>
+                                <input type="checkbox" disabled="true" checked="checked" id="visibilityCheckBox">
+                        </div>
+                        <div class="selector">
+                            <!--         <div class="rule"  title="设置样式应用的缩放级别">
+          <table class="rulename">
+            <tbody><tr>
+              <td width="20"><input type="checkbox" id="set_zoom"></td>
+              <td width="111" align="left"><span class="glyphicon glyphicon-fullscreen"></span><b>缩放级别</b></td>
+              <td width="129" align="left">
+                <span id="zoom-slider-label"></span>
+              </td>
+            </tr>
+          </tbody></table>
+          <div class="rulecontrol">
+            <div style="margin:10px" id="zoom-slider"></div>
+          </div>
+        </div> -->
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade customlist" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">个性化主题列表(点击示例可以载入配置)</h4>
+                </div>
+                <div class="modal-body" id="maplist-container">
+                </div>
+                <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <div class="modal fade " id="json">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">样式JSON</h4>
+                </div>
+                <div class="modal-body" style="margin-bottom:0;padding-bottom:0">
+                    <textarea id="jsonTextarea"></textarea>
+                    <pre style="margin-top:15px;">
+<strong>使用方法</strong> 
+map.setMapStyle({
+  styleJson:[[上面的json对象]]
+});</pre>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">复制</button> -->
+                    <button type="button" data-dismiss="modal" onclick="StyleEditor.setMapJson()" class="btn btn-primary">修改后并更新</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <div class="modal fade" id="mobileAlert">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>亲爱的用户你好, 建议您在PC端进行个性化编辑处理.</p>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.js"></script>
+    <script type="text/javascript">
+    function isMobile() {
+        var isMobile = {
+            Android: function() {
+                return navigator.userAgent.match(/Android/i) ? true : false;
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BlackBerry/i) ? true : false;
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i) ? true : false;
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i) ? true : false;
+            },
+            any: function() {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Windows());
+            }
+        };
+        if (isMobile.any()) {
+            return true;
+        }
+        return false;
+    }
+
+    if (isMobile()) {
+        // document.write('<h1>百度个性化地图编辑器,暂不支持移动端, 你可以在PC上访问</h1>');
+        $("#mobileAlert").modal('show');
+        // return;
+    }
+
+    var isSupportCanvas = false;
+    try {
+        document.createElement('canvas').getContext('2d');
+        isSupportCanvas = true;
+    } catch (e) {
+        isSupportCanvas = false;
+    }
+    if (!isSupportCanvas) {
+        alert("个性地图编辑器：推荐使用百度浏览器、chrome、firefox、safari、IE10");
+    }
+    </script>
+    <script type="text/javascript" src="js/spectrum.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core-3.5.js"></script>
+    <script type="text/javascript" src="js/cat.js"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/custom/stylelist.js"></script>
+    <script type="text/javascript" src="js/editor.js"></script>
+    //
+    <script type="text/javascript" src="js/intro.js"></script>
+    <script type="text/javascript">
+    // $(function(){
+    //    window.introjs =  introJs().setOptions({
+    //                       'tooltipPosition':"top",
+    //                       'nextLabel': '下一条',
+    //                       "prevLabel":"上一条",
+    //                       "skipLabel":"跳过",
+    //                       "doneLabel":"完成",
+    //                       "exitOnOverlayClick":false
+    //   });
+    //     if(window.localStorage){
+    //         if(localStorage.getItem("customHelper") != 'true'){
+
+    //           localStorage.setItem('customHelper','true');
+    //           introjs.start();
+    //         }
+    //     }
+
+    //   });
+    </script>
+    <script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "快来看我刚刚编辑的个性化地图吧，您只要轻点几下鼠标，便可轻松打造属于您自己的个性地图啦！",
+            "bdMini": "2",
+            "bdMiniList": false,
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "0",
+            "onBeforeClick": function(cmd, config) {
+                if (cmd == 'tsina') {
+                    config.bdText = "快来看我刚刚编辑的个性化地图吧，您只要轻点几下鼠标，便可轻松打造属于您自己的个性地图啦！更有机会得iPad mini等多重好礼！我创作的地图主题是（）我要参赛@百度LBS开放平台";
+                }
+                config.bdUrl = location.origin + "/map/custom/case.htm?custom=" + currentCustomId;
+                config.bdPic = "http://api0.map.bdimg.com/customimage/snap/?customid=" + currentCustomId;
+                return config;
+            }
+        },
+        "share": {}
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+    </script>
+    <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F5650c092812f8659cdfe23eeb42024ef' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?c023b3669de2b668e85bc4d063a48718";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+</body>
+
+</html>

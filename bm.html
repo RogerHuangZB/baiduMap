@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>MapDemo</title>
+	<style type="text/css">
+		html{height:100%}
+		body{height:100%;margin:0px;padding:0px}
+		#container{height:100%;}
+		h3{margin: 4px;color:#ffffff;}
+		h6{margin: 3px}
+		div>li{margin: 3px}
+		.anchorBL{display:none}	/*屏蔽百度logo*/
+		#top-panel{height: 30px;width: 280px;position: absolute;top: 0;left: 0;
+			opacity: 0.7;
+			background:-webkit-gradient(linear, 0 0, 200 0, from(#000000), to(#dddddd));
+			/*border: 1px solid black;*/
+		}
+		#left-panel{height: 92%;width: 280px;position: absolute;top: 31px;left: 0px;background-color:rgba(221,221,221,0.4);}
+		#left-panel div{height: 18.5%;width: 220px;margin: 10px 10px 10px 20px;background-color:rgba(255,255,255,0.7);padding: 10px;border-radius: 15px;}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Wqab9Ynd0XdxSyHWRpTTOtTFGMBiputH"></script>
+	<script type="text/javascript" src="/baiduMap/js/initMap.js"></script>
+	<script type="text/javascript" src="/baiduMap/js/airport.js"></script>
+</head>
+
+<body>
+	<div id="container"></div>
+	<div id="top-panel">
+		<h3>设备异常汇总</h2>
+	</div>
+	<div id="left-panel">
+		<div>
+			<h6>读卡器：</h6>
+			<h6>品牌：</h6>
+			<hr/>
+			<li></li>
+			<li></li>
+		</div>
+		<div>
+			<h6>天线：</h6>
+			<h6>品牌：</h6>
+			<hr/>
+			<li></li>
+			<li></li>
+		</div>
+		<div>
+			<h6>总控器：</h6>
+			<h6>品牌：</h6>
+			<hr/>
+			<li></li>
+			<li></li>
+		</div>
+		<div>
+			<h6>服务器：</h6>
+			<h6>品牌：</h6>
+			<hr/>
+			<li></li>
+			<li></li>
+		</div>
+	</div>
+</body>
+
+</html>
+<script type="text/javascript">
+	initMap();
+
+	/*addAirport('121.352', '31.200', '上海虹桥国际机场');
+	addAirport('121.809', '31.156', '上海浦东国际机场');*/
+	addAirport('113.077', '23.074', '佛山沙堤机场');
+	addAirport('116.403', '39.797', '北京南苑机场');
+
+
+</script>
+
